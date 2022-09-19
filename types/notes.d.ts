@@ -1,0 +1,1 @@
+export type Note = number | typeof NOTES[number]

@@ -1,43 +1,45 @@
-const notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'] as const
-const minor = [0, 2, 1, 2, 2, 1, 2, 2]
-const major = [0, 2, 2, 1, 2, 2, 2, 1]
+import { Note } from "../types/notes";
+import { MAJOR_STEPS, MINOR_STEPS, NOTES } from "./constants";
 
-interface Key {
-    notes: any[]
+export const getNote = (num: number): Note => {
+    return NOTES[num % 12]
 }
 
-export const getNote = (num: number) => {
+export const getOctaveNote = (num: number): string => {
     const octave = Math.floor(num / 12) - 1
-    const note = notes[num % 12]
+    const note = NOTES[num % 12]
     return `${note}${octave}`;
 }
 
-export const getNotes = (arr: number[]) => {
-    return arr.map(getNote)
-}
-
-export const getMinorKey = (note: number | typeof notes[number]): number[] => {
-    const key: number[] = []
+export const getMinorScale = (note: Note): number[] => {
+    const scale: number[] = []
     if (typeof note === 'number') {
         let current = note;
-        minor.forEach((s) => key.push(current += s))
+        MINOR_STEPS.forEach((s) => scale.push(current += s))
     }
-    return key
+    return scale
 }
 
-export const getMajorKey = (note: number | typeof notes[number]): number[] => {
-    const key: number[] = []
+export const getMajorScale = (note: Note): number[] => {
+    const scale: number[] = []
     if (typeof note === 'number') {
         let current = note;
-        major.forEach((s) => key.push(current += s))
+        MAJOR_STEPS.forEach((s) => scale.push(current += s))
     }
-    return key
+    return scale
 }
 
-export const getMaj7 = (note: number) => {
-    return getMajorKey(note).filter((_, i) => [0, 2, 4, 6].includes(i))
+export const getMajorScaleNotes = (note: Note): Note[] => {
+    const scale = getMajorScale(note)
+    return scale.map(getNote)
 }
 
-export const getMin7 = (note: number) => {
-    return getMinorKey(note).filter((_, i) => [0, 2, 4, 6].includes(i))
+export const getMaj7 = (note: Note) => {
+    const scale = getMajorScale(note)
+    return [0, 2, 4, 6].map((i) => scale[i])
+}
+
+export const getMin7 = (note: Note) => {
+    const scale = getMinorScale(note)
+    return [0, 2, 4, 6].map((i) => scale[i])
 }
